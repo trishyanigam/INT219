@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .list {
+            text-align: left;
+            margin-top: 10px;
+        }
+        .highlight {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Interactive Budget Planner</h1>
+
+        <!-- Dashboard -->
+        <div class="section">
+            <h2>Dashboard</h2>
+            <p>Total Income: ₹<span id="totalIncome">0</span></p>
+            <p>Total Expenses: ₹<span id="totalExpenses">0</span></p>
+            <p>Savings: ₹<span id="totalSavings">0</span></p>
+        </div>
+
+        <!-- Income Tracker -->
+        <div class="section">
+            <h2>Income Tracker</h2>
+            <input type="text" id="incomeSource" placeholder="Income Source">
+            <input type="number" id="incomeAmount" placeholder="Amount">
+            <button onclick="addIncome()">Add Income</button>
+            <ul id="incomeList" class="list"></ul>
+        </div>
+
+        <!-- Expense Manager -->
+        <div class="section">
+            <h2>Expense Manager</h2>
+            <input type="text" id="expenseCategory" placeholder="Expense Category">
+            <input type="number" id="expenseAmount" placeholder="Amount">
+            <button onclick="addExpense()">Add Expense</button>
+            <ul id="expenseList" class="list"></ul>
+        </div>
+
+        <!-- Savings Goals -->
+        <div class="section">
+            <h2>Savings Goals</h2>
+            <input type="number" id="savingsGoal" placeholder="Target Savings">
+            <button onclick="setSavingsGoal()">Set Goal</button>
+            <p>Goal: ₹<span id="goalAmount">0</span></p>
+            <p>Progress: ₹<span id="savingsProgress">0</span></p>
+        </div>
+
+        <!-- AI-Powered Insights -->
+        <div class="section">
+            <h2>AI Insights</h2>
+            <p id="aiMessage"></p>
+        </div>
+
+    </div>
+
+    <script>
+        let totalIncome = 0;
+        let totalExpenses = 0;
+        let savingsGoal = 0;
+        let totalSavings = 0;
+
+        function addIncome() {
+            let source = document.getElementById("incomeSource").value;
+            let amount = parseFloat(document.getElementById("incomeAmount").value);
+            
+            if (source && amount > 0) {
+                totalIncome += amount;
+                totalSavings += amount;
+                document.getElementById("totalIncome").innerText = totalIncome;
+                document.getElementById("totalSavings").innerText = totalSavings;
+                
+                let listItem = document.createElement("li");
+                listItem.innerText = `${source}: ₹${amount}`;
+                document.getElementById("incomeList").appendChild(listItem);
+                
+                updateInsights();
+            }
+        }
+
+        function addExpense() {
+            let category = document.getElementById("expenseCategory").value;
+            let amount = parseFloat(document.getElementById("expenseAmount").value);
+            
+            if (category && amount > 0) {
+                totalExpenses += amount;
+                totalSavings -= amount;
+                document.getElementById("totalExpenses").innerText = totalExpenses;
+                document.getElementById("totalSavings").innerText = totalSavings;
+                
+                let listItem = document.createElement("li");
+                listItem.innerText = `${category}: ₹${amount}`;
+                document.getElementById("expenseList").appendChild(listItem);
+                
+                updateInsights();
+            }
+        }
+
+        function setSavingsGoal() {
+            savingsGoal = parseFloat(document.getElementById("savingsGoal").value);
+            if (savingsGoal > 0) {
+                document.getElementById("goalAmount").innerText = savingsGoal;
+                updateInsights();
+            }
+        }
+
+        function updateInsights() {
+            let message = "You're doing great!";
+            if (totalExpenses > totalIncome * 0.8) {
+                message = "⚠️ Warning: High expenses! Try to cut down.";
+            } else if (totalSavings >= savingsGoal && savingsGoal > 0) {
+                message = "🎉 Congratulations! You’ve reached your savings goal!";
+            } else if (totalSavings < savingsGoal / 2 && savingsGoal > 0) {
+                message = "💡 Suggestion: Save more to reach your goal faster.";
+            }
+
+            document.getElementById("aiMessage").innerHTML = message;
+        }
+    </script>
+
+</body>
+</html>
